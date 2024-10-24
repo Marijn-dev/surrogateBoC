@@ -24,25 +24,27 @@ You can download the software and follow the installation instructions from the 
 
 ---
 
-## Folder: Matlab 
-Different subfolders are found that contain Matlab code. In general a file name that starts with 'fun....m' is a function and files starting with 'main...m' can be run individually, calling on functions in the same folder if needed. The subfolders and tasks executed by the code are shortly elaborated below: 
-- **'Analyse_PI_ML_results'**: This subfolder contains code to generate visualizations of the results of the Physics-Informed Machine Learning models. 
-- **'FHN_experimental_data'**: Learn the Fitzhugh-Nagumo (FHN) model based on experimental data. To run the main file without issues, the 'fun_parameters.m' sets all parameters used in the simulation. The default values can be used, but the directory needs to be set to where the MEA data is stored by adjusting parameter 'pm.loading.measurement' inside this file. The data needs to be of the format '.h5' file.
-- **'FHN_numerical_data'**: Learn the Fitzhugh-Nagumo (FHN) model based by using numerically generated data. The 'main' files run through all steps of setting up the simulation, generating the data and learning the FHN model parameters. 
-- **'Prepare_MEA_Measurements'**: This subfolder contains all Matlab code that can be used to analyze the activity in the MEA data and to convert the raw data to firing rate model inputs for the physics informed learning flow function. Just as for the 'FHN_experimental_data', the 'fun_parameters.m' sets all parameters used in the simulation and the directory needs to be set to where the MEA data is stored by adjusting parameter 'pm.loading.measurement' inside this file. The raw data needs to be of the format '.h5' file.
+## Folder: Matlab
+
+Different subfolders contain Matlab code. In general, a file name that starts with `fun....m` is a function, and files starting with `main...m` can be run individually, calling on functions in the same folder if needed. The subfolders and tasks executed by the code are briefly explained below:
+
+- **`Analyse_PI_ML_results`**: This subfolder contains code to generate visualizations of the results of the Physics-Informed Machine Learning models.
+- **`FHN_experimental_data`**: Learn the Fitzhugh-Nagumo (FHN) model based on experimental data. To run the main file without issues, the `fun_parameters.m` file sets all parameters used in the simulation. The default values can be used, but the directory needs to be set to where the MEA data is stored by adjusting the parameter `pm.loading.measurement` inside this file. The data needs to be in the `.h5` file format.
+- **`FHN_numerical_data`**: Learn the Fitzhugh-Nagumo (FHN) model using numerically generated data. The `main` files walk through all steps of setting up the simulation, generating the data, and learning the FHN model parameters.
+- **`Prepare_MEA_Measurements`**: This subfolder contains all Matlab code that can be used to analyze the activity in MEA data and to convert the raw data to firing rate model inputs for the physics-informed learning flow function. Just like in the `FHN_experimental_data` subfolder, the `fun_parameters.m` file sets all parameters used in the simulation, and the directory needs to be set to where the MEA data is stored by adjusting the `pm.loading.measurement` parameter inside this file. The raw data needs to be in the `.h5` file format.
+
 
 ---
 
-## Folder: Python 
-text
+## Folder: Python
 
-### Before running the code
-1. Setting up the environment
+This folder contains all Python code, used for running Physcis-Informed Machine Learning simulations and analyses.
 
-2. Initializing the simulation. 
+1. **Setting Up the Environment**  
+   It is recommended to use a separate environment to avoid package conflicts. The required packages and their versions are listed in the `environment.yaml` file. While you can use this file to set up the environment, manually installing the packages is also an option. Most Python files in this repository require only a few specific packages, which can be easily identified at the top of each script.
 
+2. **Initializing the Simulation**  
+   Before running the simulations, configure the settings in `config.py` according to your needs. The default parameters should work for most cases, but ensure you specify the directory where results will be saved by adjusting the `self.save_folder` variable. Similarly, when saving datasets, update the storage path by setting `self.folder_datasets`.
 
-
-### Running the code
-
----
+3.  **Run the simulation**
+    Once everything is set, run any of the `main...py` scripts to start the simulation. The `main_single.py` is running a single loop of data generation, learning the model and testing the model. All other `main...py` files are more extensive numerical experiments. The results will be automatically stored in the specified directory. To generate the figures as found in the thesis connected to this repository, use the MATLAB scripts found in the `Analyse_PI_ML_results` subfolder inside the `Matlab` folder of this repository.

@@ -68,12 +68,9 @@ class Config:
 
         # General parameters
         self.save_name = f"{self.sim_number}_{self.architect}_PI{self.PI_ML}_Nr{self.N_r}_Nu{self.N_u}_Nseq{self.N_data_seq}"
-        # self.save_folder = f"./results/{self.exp_name}/Sim_{self.sim_number}"
+        
         self.save_folder = f"/home/tue/20182152/Results_simulations/{self.exp_name}/Sim_{self.sim_number}"
-
-        # self.folder_datasets = f"./datasets/generalisation"
         self.folder_datasets = f"/home/tue/20182152/Datasets"
-        # self.folder_datasets = f"/home/tue/20182152/Datasets_generalisation"
 
         # Physics parameters
         self.preset_phys_values = True
