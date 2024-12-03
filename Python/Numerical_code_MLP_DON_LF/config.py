@@ -73,7 +73,7 @@ class Config:
         # self.folder_datasets = f"/home/tue/20182152/Datasets"
  
         self.save_folder = f"/Results_simulations/{self.exp_name}/Sim_{self.sim_number}"
-        self.folder_datasets = f"Python/Numerical_code_MLP_DON_LF/Datasets"
+        self.folder_datasets = f"/Datasets"
 
         # Physics parameters
         self.preset_phys_values = True
