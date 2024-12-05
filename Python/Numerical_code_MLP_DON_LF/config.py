@@ -1,13 +1,14 @@
 import numpy as np
+import wandb
 
 class Config:
     def __init__(self):     
-
+        
         # General parameters
-        self.save_results = True
-        self.exp_name = "physics_disturbance"
-        self.sim_number = 13
-        self.architect = 'DON' # Choose model architecture: 'MLP' / 'DON' / 'LF' / 'DON_LH'
+        self.save_results = True 
+        self.exp_name = "scale_up_LF"
+        self.sim_number = 16
+        self.architect = 'LF' # Choose model architecture: 'MLP' / 'DON' / 'LF' / 'DON_LH'
       
         # Parameters data generation
         self.N_r = 3
@@ -35,7 +36,7 @@ class Config:
         # General Parameters ML
         self.PI_ML = True  # True: use the physics informed loss and data loss, False: use only the data loss
         self.PI_ML_learn_par = True # True: learn the physics parameters, False: use the preset physics parameters
-        self.num_epochs = 1000
+        self.num_epochs = 10
         self.log_iterations = 50
         self.eta = 0.01
         self.eta_phys_par = 0.01
@@ -69,11 +70,12 @@ class Config:
         # General parameters
         self.save_name = f"{self.sim_number}_{self.architect}_PI{self.PI_ML}_Nr{self.N_r}_Nu{self.N_u}_Nseq{self.N_data_seq}"
 
-        # self.save_folder = f"/home/tue/20182152/Results_simulations/{self.exp_name}/Sim_{self.sim_number}"
-        # self.folder_datasets = f"/home/tue/20182152/Datasets"
+        self.save_folder = f"/home/marijn/Documents/Thesis/Results_simulations/{self.exp_name}/Sim_{self.sim_number}"
+        self.folder_datasets = f"/home/marijn/Documents/Thesis/Datasets"
+        
  
-        self.save_folder = f"/Results_simulations/{self.exp_name}/Sim_{self.sim_number}"
-        self.folder_datasets = f"/Datasets"
+        #self.save_folder = f"/Results_simulations/{self.exp_name}/Sim_{self.sim_number}"
+        #self.folder_datasets = f"/Datasets"
 
         # Physics parameters
         self.preset_phys_values = True
@@ -143,6 +145,7 @@ class Config:
     # Save the initialisation settings
     def save_initialisation_settings(self):      
         print('Saving the initialisation settings')  
+        
         with open(f"{self.save_folder}/{self.save_name}_Initialisation.txt", "w") as f:
             f.write('General parameters\n')
             f.write(f"save_results: {self.save_results}\n")

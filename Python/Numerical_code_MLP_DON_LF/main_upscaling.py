@@ -10,15 +10,18 @@ from model import *
 from train import train_model
 from testing import test_model
 from saving_results import *
+import wandb
 
 def main():
     # Initialize all settings
     config = Config()
-    n_sim_per_combi = 10
 
+    n_sim_per_combi = 2
+    
     param_combi = [{'N_r': 3, 'N_u': 1},
-                   {'N_r': 10, 'N_u': 3},
-                   {'N_r': 30, 'N_u': 10}]
+                   {'N_r': 30, 'N_u': 10},
+                   {'N_r': 120, 'N_u':30},
+                   {'N_r':240, 'N_u':60}]
 
     all_results = []
     all_results_phys = []
@@ -61,15 +64,20 @@ def run_simulation(config, train_loader, val_loader, test_loader):
     # Initialize model	
     modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sched, early_stop = initialize_model(config)
 
+    if config.save_results: 
+        wandb.init(project='BoC',name=f"{config.exp_name}_Sim:{config.sim_number}_Nr:{config.N_r}_Nu:{config.N_u}",config=config)
+        
     # Train model
     logging, best_modelNN, best_modelPhys = train_model(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sched, early_stop, train_loader, val_loader, config)    
     
+
     # Test model
     test_results = test_model(best_modelNN, best_modelPhys, test_loader, criterion, config)
     
     result = extract_results_saving(logging, test_results)
     result_phys = extract_results_saving_phys_param(config, logging)
 
+    wandb.finish()
     return result, result_phys
 
 

@@ -3,10 +3,11 @@ import torch
 from tqdm import tqdm
 import numpy as np
 import time
+import wandb
 
 ##################################################################################
  # General training function
-##################################################################################
+##################################################################################https://wandb.ai/marijn-eindhoven-university-of-technology/BoC/runs/i5cu7rko/overview
 def train_model(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sched, early_stop, train_loader, val_loader, par, overwrite_arch = ''):
     
     #optionally overwrite the setting of configuration
@@ -14,6 +15,9 @@ def train_model(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, 
         arch = par.architect
     else:
         arch = overwrite_arch
+
+    # start experiment    
+    #wandb.init(project='BoC')
     
     # Initalise data and physics model
     if arch == 'MLP':
@@ -96,9 +100,12 @@ def train_DON(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sc
                'gain': [], 'Phys_par': [], 'best_model_epoch': 0, 'training_time': 0}
     
     start_time = time.time()
-
+    cumulative_time = 0
+    
     for epoch in tqdm(range(par.num_epochs), miniters=50, mininterval=10, maxinterval=60):
         
+        epoch_start_time = time.time()
+
         #### Training
         modelNN.train()
         modelPhys.train()
@@ -185,6 +192,7 @@ def train_DON(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sc
         early_stop.step(val_loss_NN, val_loss_PHYS)
 
         logging = log_progress(logging, epoch, train_loss_NN, train_loss_PHYS, val_loss_NN, val_loss_PHYS, gain, modelPhys.parameters(), par)
+        
 
         if (val_loss_NN+gain.item()*val_loss_PHYS) < best_val_loss:
             best_modelNN = modelNN
@@ -196,6 +204,12 @@ def train_DON(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sc
             print(f"Early stopping at epoch {epoch}")
             break
 
+        # log cumulative time
+        epoch_end_time = time.time()
+        cumulative_time += (epoch_end_time - epoch_start_time)
+        if par.save_results:
+            wandb.log({"Cumulative computation time [m]": cumulative_time/60})
+            
     logging['training_time'] = time.time() - start_time
 
     return logging, best_modelNN, best_modelPhys
@@ -213,9 +227,12 @@ def train_LF(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sch
                'gain': [], 'Phys_par': [], 'best_model_epoch': 0, 'training_time': 0}
     
     start_time = time.time()
+    cumulative_time = 0
 
     for epoch in tqdm(range(par.num_epochs), miniters=50, mininterval=10, maxinterval=60):
         #### Training
+        epoch_start_time = time.time()
+        
         modelNN.train()
         modelPhys.train()
         train_loss_NN = 0.0
@@ -320,6 +337,12 @@ def train_LF(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sch
             print(f"Early stopping at epoch {epoch}")
             break
 
+        # log cumulative time
+        epoch_end_time = time.time()
+        cumulative_time += (epoch_end_time - epoch_start_time)
+        if par.save_results:
+            wandb.log({"Cumulative computation time [m]": cumulative_time/60})
+
     logging['training_time'] = time.time() - start_time
     
     return logging, best_modelNN, best_modelPhys
@@ -380,6 +403,9 @@ def DON_prep_inputs(par, t_batch, u_batch, r0_batch, r_batch, device):
     return t_batch, r_batch, u_batch, r0_batch, t_phys
 
 
+# def log_progress_WB(logging, epoch, train_loss_NN, train_loss_PHYS, val_loss_NN, val_loss_PHYS, gain, phys_param, par):
+     
+
 def log_progress(logging, epoch, train_loss_NN, train_loss_PHYS, val_loss_NN, val_loss_PHYS, gain, phys_param, par):
 
     logging['loss_train_NN'].append(train_loss_NN)
@@ -403,5 +429,18 @@ def log_progress(logging, epoch, train_loss_NN, train_loss_PHYS, val_loss_NN, va
     if epoch % par.log_iterations == 0:
         print(f"\n Epoch {epoch}: \n Train Loss data: {train_loss_NN:.4f}, Val Loss data: {val_loss_NN:.4f}")
         print(f"Train Loss physics: {train_loss_PHYS:.4f}, Val Loss physics: {val_loss_PHYS:.4f}, \n gain: {gain.item()} \n ------- \n")
+
+    # log using Weights and Biases
+    if par.save_results:
+        wandb.log({
+            'loss_train_NN': train_loss_NN,
+            'loss_train_PHYS': train_loss_PHYS,
+            'loss_train_tot': train_loss_NN+gain.item()*train_loss_PHYS,
+            'loss_val_NN': val_loss_NN,
+            'loss_val_PHYS': val_loss_PHYS,
+            'loss_val_tot': val_loss_NN+gain.item()*val_loss_PHYS, 
+            'gain': gain.item(),
+            'Phys_par': param_epoch, # won't work since list   
+        })
 
     return logging #return the updated logging

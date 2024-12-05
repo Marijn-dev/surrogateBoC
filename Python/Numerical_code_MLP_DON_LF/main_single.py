@@ -9,14 +9,19 @@ from train import train_model
 from testing import test_model
 from visualization import plot_training, plot_results
 from saving_results import save_single_sim
+import wandb
 
 def main():
     # Initialize all settings
     config = Config()
-    
+ 
+    # start Weights and Bias logging
+    if config.save_results:
+        wandb.init(project='BoC',name=f"{config.exp_name}_{config.sim_number}",config=config)
+
     # Generate data
     t, r, u, u_props = generate_data(config, config.N_data_seq)
-    
+         
     # Prepare data
     train_loader, val_loader, test_loader = prepare_data(config, t, r, u, u_props)
 
@@ -25,7 +30,7 @@ def main():
 
     # Train model
     logging, best_modelNN, best_modelPhys = train_model(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sched, early_stop, train_loader, val_loader, config)    
-    
+     
     # Test model
     test_results = test_model(best_modelNN, best_modelPhys, test_loader, criterion, config)
     
