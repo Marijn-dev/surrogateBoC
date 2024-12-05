@@ -232,7 +232,6 @@ def train_LF(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sch
     for epoch in tqdm(range(par.num_epochs), miniters=50, mininterval=10, maxinterval=60):
         #### Training
         epoch_start_time = time.time()
-        
         modelNN.train()
         modelPhys.train()
         train_loss_NN = 0.0
@@ -333,15 +332,14 @@ def train_LF(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sch
             logging['best_model_epoch'] = epoch
             best_val_loss = (val_loss_NN+gain.item()*val_loss_PHYS)
 
-        if early_stop.early_stop:
-            print(f"Early stopping at epoch {epoch}")
-            break
-
-        # log cumulative time
         epoch_end_time = time.time()
         cumulative_time += (epoch_end_time - epoch_start_time)
         if par.save_results:
             wandb.log({"Cumulative computation time [m]": cumulative_time/60})
+        if early_stop.early_stop:
+            print(f"Early stopping at epoch {epoch}")
+            break
+
 
     logging['training_time'] = time.time() - start_time
     
