@@ -229,7 +229,7 @@ def train_LF(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sch
     start_time = time.time()
     cumulative_time = 0
 
-    for epoch in tqdm(range(par.num_epochs), miniters=50, mininterval=10, maxinterval=60):
+    for epoch in range(par.num_epochs):
         #### Training
         epoch_start_time = time.time()
         modelNN.train()
