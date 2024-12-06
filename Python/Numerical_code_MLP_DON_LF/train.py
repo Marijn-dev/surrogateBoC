@@ -208,7 +208,8 @@ def train_DON(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sc
         epoch_end_time = time.time()
         cumulative_time += (epoch_end_time - epoch_start_time)
         if par.save_results:
-            wandb.log({"Cumulative computation time [m]": cumulative_time/60})
+            wandb.log({"epoch":epoch,
+                       "Cumulative computation time [m]": cumulative_time/60})
             
     logging['training_time'] = time.time() - start_time
 
@@ -332,12 +333,12 @@ def train_LF(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sch
             logging['best_model_epoch'] = epoch
             best_val_loss = (val_loss_NN+gain.item()*val_loss_PHYS)
             if par.save_results:
-                wandb.log({"best_model_epoch": epoch})
+                wandb.log({"epoch":epoch,"best_model_epoch": epoch})
 
         epoch_end_time = time.time()
         cumulative_time += (epoch_end_time - epoch_start_time)
         if par.save_results:
-            wandb.log({"Cumulative computation time [m]": cumulative_time/60})
+            wandb.log({"epoch":epoch,"Cumulative computation time [m]": cumulative_time/60})
         if early_stop.early_stop:
             print(f"Early stopping at epoch {epoch}")
             break
