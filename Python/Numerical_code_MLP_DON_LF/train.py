@@ -333,12 +333,12 @@ def train_LF(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sch
             logging['best_model_epoch'] = epoch
             best_val_loss = (val_loss_NN+gain.item()*val_loss_PHYS)
             if par.save_results:
-                wandb.log({"epoch":epoch,"best_model_epoch": epoch})
+                wandb.log({"best_model_epoch": epoch},commit=False)
 
         epoch_end_time = time.time()
         cumulative_time += (epoch_end_time - epoch_start_time)
         if par.save_results:
-            wandb.log({"epoch":epoch,"Cumulative computation time [m]": cumulative_time/60})
+            wandb.log({"epoch":epoch,"Cumulative computation time [m]": cumulative_time/60},commit=True)
         if early_stop.early_stop:
             print(f"Early stopping at epoch {epoch}")
             break
@@ -434,7 +434,6 @@ def log_progress(logging, epoch, train_loss_NN, train_loss_PHYS, val_loss_NN, va
     # log using Weights and Biases
     if par.save_results:
         wandb.log({
-            'epoch': epoch,
             'loss_train_NN': train_loss_NN,
             'loss_train_PHYS': train_loss_PHYS,
             'loss_train_tot': train_loss_NN+gain.item()*train_loss_PHYS,
@@ -443,6 +442,6 @@ def log_progress(logging, epoch, train_loss_NN, train_loss_PHYS, val_loss_NN, va
             'loss_val_tot': val_loss_NN+gain.item()*val_loss_PHYS, 
             'gain': gain.item(),
             'Phys_par': param_epoch, # won't work since list   
-        })
+        },commit=False)
 
     return logging #return the updated logging
