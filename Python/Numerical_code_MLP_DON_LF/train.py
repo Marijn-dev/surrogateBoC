@@ -102,7 +102,7 @@ def train_DON(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sc
     start_time = time.time()
     cumulative_time = 0
     
-    for epoch in tqdm(range(par.num_epochs), miniters=50, mininterval=10, maxinterval=60):
+    for epoch in range(par.num_epochs):
         
         epoch_start_time = time.time()
 

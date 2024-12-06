@@ -7,7 +7,7 @@ class Config:
         # General parameters
         self.save_results = True 
         self.exp_name = "scale_up_LF"
-        self.sim_number = 19
+        self.sim_number = 20
         self.architect = 'LF' # Choose model architecture: 'MLP' / 'DON' / 'LF' / 'DON_LH'
       
         # Parameters data generation
@@ -36,7 +36,7 @@ class Config:
         # General Parameters ML
         self.PI_ML = True  # True: use the physics informed loss and data loss, False: use only the data loss
         self.PI_ML_learn_par = True # True: learn the physics parameters, False: use the preset physics parameters
-        self.num_epochs = 10
+        self.num_epochs = 1000
         self.log_iterations = 50
         self.eta = 0.01
         self.eta_phys_par = 0.01
