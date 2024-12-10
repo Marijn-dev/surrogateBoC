@@ -443,7 +443,6 @@ def log_progress(logging, epoch, train_loss_NN, train_loss_PHYS, val_loss_NN, va
             'loss_val_PHYS': val_loss_PHYS,
             'loss_val_tot': val_loss_NN+gain.item()*val_loss_PHYS, 
             'gain': gain.item(),
-            'Phys_par': param_epoch, # won't work since list   
         },commit=False)
 
     return logging #return the updated logging

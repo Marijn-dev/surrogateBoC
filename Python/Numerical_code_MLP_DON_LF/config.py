@@ -7,7 +7,7 @@ class Config:
         # General parameters
         self.save_results = True 
         self.exp_name = "scale_up_DON"
-        self.sim_number = 21
+        self.sim_number = 22
         self.architect = 'DON' # Choose model architecture: 'MLP' / 'DON' / 'LF' / 'DON_LH'
       
         # Parameters data generation
