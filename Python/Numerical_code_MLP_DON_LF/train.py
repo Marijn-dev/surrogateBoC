@@ -4,7 +4,7 @@ from tqdm import tqdm
 import numpy as np
 import time
 import wandb
-
+import math
 ##################################################################################
  # General training function
 ##################################################################################https://wandb.ai/marijn-eindhoven-university-of-technology/BoC/runs/i5cu7rko/overview
@@ -435,14 +435,20 @@ def log_progress(logging, epoch, train_loss_NN, train_loss_PHYS, val_loss_NN, va
 
     # log using Weights and Biases
     if par.save_results:
-        wandb.log({
+        data = {
             'loss_train_NN': train_loss_NN,
             'loss_train_PHYS': train_loss_PHYS,
-            'loss_train_tot': train_loss_NN+gain.item()*train_loss_PHYS,
+            'loss_train_tot': train_loss_NN + gain.item() * train_loss_PHYS,
             'loss_val_NN': val_loss_NN,
             'loss_val_PHYS': val_loss_PHYS,
-            'loss_val_tot': val_loss_NN+gain.item()*val_loss_PHYS, 
+            'loss_val_tot': val_loss_NN + gain.item() * val_loss_PHYS,
             'gain': gain.item(),
-        },commit=False)
+        }
+
+        # Check for NaN values in the data dictionary
+        if not any(math.isnan(v) if isinstance(v, (float, int)) else False for v in data.values()):
+            wandb.log(data, commit=False)
+        else:
+            print("Skipping wandb.log due to NaN values in the data:", data)
 
     return logging #return the updated logging
