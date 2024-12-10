@@ -199,6 +199,8 @@ def train_DON(modelNN, modelPhys, gain, criterion, optimizer, optimizer_gain, sc
             best_modelPhys = modelPhys
             logging['best_model_epoch'] = epoch
             best_val_loss = val_loss_NN+gain.item()*val_loss_PHYS
+            if par.save_results:
+                wandb.log({"best_model_epoch": epoch},commit=False)
 
         if early_stop.early_stop:
             print(f"Early stopping at epoch {epoch}")
