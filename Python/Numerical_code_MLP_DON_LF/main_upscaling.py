@@ -18,9 +18,8 @@ def main():
 
     n_sim_per_combi = 2
     
-    param_combi = [{'N_r': 30, 'N_u': 10},
-                   {'N_r': 120, 'N_u':30},
-                   {'N_r':240, 'N_u':60}]
+    param_combi = [{'N_r': 3, 'N_u': 1},
+                   {'N_r': 30, 'N_u':10}]
 
     all_results = []
     all_results_phys = []
