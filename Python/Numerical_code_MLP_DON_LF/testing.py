@@ -3,6 +3,8 @@ import torch
 from tqdm import tqdm
 from train import lf_prep_inputs, DON_prep_inputs
 import numpy as np
+import wandb
+import math
 
 def test_model(modelNN, modelPhys, test_loader, criterion, par, overwrite_arch = ''):
     #optionally overwrite the setting of configuration
@@ -88,6 +90,17 @@ def DON_test_model(modelNN, modelPhys, test_loader, criterion, par):
                "t_batch": t_array, "u_batch": u_batch.cpu().detach().numpy(), "r0_batch": r0_batch.cpu().detach().numpy(), "r_batch": r_batch.cpu().detach().numpy(), 
                "r_est": r_est.cpu().detach().numpy(), "r_phys": r_phys.cpu().detach().numpy(), "t_phys": t_phys.cpu().detach().numpy(), 
                "output_phys": output_phys.cpu().detach().numpy(), "dr_phys_dt": dr_phys_dt.cpu().detach().numpy()}
+
+    if par.save_results:
+        data = {
+            'loss_test_data': loss_data,
+            'loss_test_phys': test_loss_phys}
+            
+        # Check for NaN values in the data dictionary
+        if not any(math.isnan(v) if isinstance(v, (float, int)) else False for v in data.values()):
+            wandb.log(data, commit=False)
+        else:
+            print("Skipping wandb.log due to NaN values in the data:", data)
 
     #print the test losses
     print(f"Test Loss data: {test_loss_data:.4f}, Test Loss physics: {test_loss_phys:.4f}")
@@ -218,6 +231,18 @@ def LF_test_model(modelNN, modelPhys, test_loader, criterion, par):
     logging = {"loss_data": test_loss_data, "loss_phys": test_loss_phys,
                "t_batch": t_batch.cpu().detach().numpy(), "u_batch": u_inst.cpu().detach().numpy(), "r_batch": r_batch.cpu().detach().numpy(), 
                "r_est": r_est.cpu().detach().numpy(), "output_phys": output_phys.cpu().detach().numpy(), "dr_dt": dr_phys_dt.cpu().detach().numpy()}
+
+    
+    if par.save_results:
+        data = {
+            'loss_test_data': loss_data,
+            'loss_test_phys': test_loss_phys}
+            
+        # Check for NaN values in the data dictionary
+        if not any(math.isnan(v) if isinstance(v, (float, int)) else False for v in data.values()):
+            wandb.log(data, commit=False)
+        else:
+            print("Skipping wandb.log due to NaN values in the data:", data)
 
     #print the test losses
     print(f"Test Loss data: {test_loss_data:.4f}, Test Loss physics: {test_loss_phys:.4f}")

@@ -74,7 +74,7 @@ def run_simulation(config, train_loader, val_loader, test_loader):
     
     result = extract_results_saving(logging, test_results)
     result_phys = extract_results_saving_phys_param(config, logging)
-
+    
     wandb.finish()
     return result, result_phys
 
